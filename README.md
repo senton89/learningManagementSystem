@@ -339,6 +339,7 @@ WPF-окна и элементы управления, отображающие 
 1. Откройте командную строку в директории с приложением
 2. Выполните команду:
    ```
+   dotnet ef migrations add InitialMigration
    dotnet ef database update
    ```
 
