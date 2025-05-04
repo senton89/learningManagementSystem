@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="WpfApp1.Views.CourseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:WpfApp1.ViewModels"
+             xmlns:models="clr-namespace:WpfApp1.Models">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Course Header -->
+        <StackPanel>
+            <TextBlock Text="{Binding Title}" FontSize="24" FontWeight="SemiBold"/>
+            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,10,0,0"/>
+            
+            <Grid Margin="0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Teacher: "/>
+                    <TextBlock Text="{Binding TeacherName}" FontWeight="SemiBold" Margin="5,0,0,0"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <TextBlock Text="Period: "/>
+                    <TextBlock Margin="5,0,0,0">
+                        <Run Text="{Binding StartDate, StringFormat=dd.MM.yyyy, Mode=OneWay}"/>
+                        <Run Text=" - "/>
+                        <Run Text="{Binding EndDate, StringFormat=dd.MM.yyyy, Mode=OneWay}"/>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+        
+        <!-- Module List -->
+        <TextBlock Grid.Row="1" Text="Modules" FontSize="18" FontWeight="SemiBold" Margin="0,20,0,10"/>
+        
+        <!-- Add Content Button (visible only for teachers) -->
+        <Button Grid.Row="1" Content="Add Content" 
+                Command="{Binding AddContentCommand}" 
+                HorizontalAlignment="Right"
+                Visibility="{Binding IsTeacher, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        
+        <ItemsControl Grid.Row="2" ItemsSource="{Binding Modules}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Expander Header="{Binding Title}" IsExpanded="{Binding IsExpanded}" Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="20,10,0,10"/>
+                            
+                            <ItemsControl ItemsSource="{Binding Contents}" Margin="20,0,0,0">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type models:Content}">
+                                        <Grid Margin="0,5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <StackPanel Orientation="Horizontal">
+                                                <!-- Icon based on content type -->
+                                                <TextBlock Text="📄" Margin="0,0,5,0" 
+                                                           Visibility="{Binding Type, Converter={StaticResource EnumEqualityToVisibilityConverter}, ConverterParameter={x:Static models:ContentType.Text}}"/>
+                                                <TextBlock Text="🎬" Margin="0,0,5,0" 
+                                                           Visibility="{Binding Type, Converter={StaticResource EnumEqualityToVisibilityConverter}, ConverterParameter={x:Static models:ContentType.Video}}"/>
+                                                <TextBlock Text="❓" Margin="0,0,5,0" 
+                                                           Visibility="{Binding Type, Converter={StaticResource EnumEqualityToVisibilityConverter}, ConverterParameter={x:Static models:ContentType.Quiz}}"/>
+                                                <TextBlock Text="📝" Margin="0,0,5,0" 
+                                                           Visibility="{Binding Type, Converter={StaticResource EnumEqualityToVisibilityConverter}, ConverterParameter={x:Static models:ContentType.Assignment}}"/>
+                                                
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </StackPanel>
+                                            
+                                            <Button Grid.Column="1" Content="Open" 
+                                                    Command="{Binding DataContext.OpenContentCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}" 
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource PrimaryButton}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Expander>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+    </Grid>
+</UserControl>

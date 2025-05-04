@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp1", "WpfApp1\WpfApp1.csproj", "{BDA826DC-99F4-4CFC-B0AC-5F2DEB6C3042}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDA826DC-99F4-4CFC-B0AC-5F2DEB6C3042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDA826DC-99F4-4CFC-B0AC-5F2DEB6C3042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDA826DC-99F4-4CFC-B0AC-5F2DEB6C3042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDA826DC-99F4-4CFC-B0AC-5F2DEB6C3042}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

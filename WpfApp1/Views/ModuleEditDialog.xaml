@@ -1,0 +1,67 @@
+<Window x:Class="WpfApp1.Views.ModuleEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Edit Module"
+        Height="450" Width="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Title -->
+        <TextBlock Text="Edit Module" 
+                   FontSize="20" 
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,20"/>
+        
+        <!-- Module Title -->
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Title:" 
+                       Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="0,0,0,10"/>
+        </StackPanel>
+        
+        <!-- Module Description -->
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="Description:" 
+                       Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" 
+                     TextWrapping="Wrap" 
+                     AcceptsReturn="True" 
+                     Height="100" 
+                     Margin="0,0,0,10"/>
+        </StackPanel>
+        
+        <!-- Module Order -->
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Order Index:" 
+                       Margin="0,0,0,5"/>
+            <TextBox Text="{Binding OrderIndex, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="0,0,0,10"/>
+        </StackPanel>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Content="Cancel" 
+                    IsCancel="True" 
+                    Style="{StaticResource SecondaryButton}" 
+                    Width="100" 
+                    Margin="0,0,10,0"/>
+            <Button Content="Save" 
+                    Command="{Binding SaveCommand}" 
+                    Style="{StaticResource PrimaryButton}" 
+                    Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>

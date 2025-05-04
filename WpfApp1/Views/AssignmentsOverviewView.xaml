@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="WpfApp1.Views.AssignmentsOverviewView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:WpfApp1.ViewModels">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <TextBlock Text="Assignments Management" 
+                 FontSize="24" 
+                 FontWeight="SemiBold"/>
+        
+        <!-- Course Selection and Controls -->
+        <Grid Grid.Row="1" Margin="0,20,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Course:" 
+                     VerticalAlignment="Center" 
+                     Margin="0,0,10,0"/>
+            
+            <ComboBox Grid.Column="1" 
+                     ItemsSource="{Binding Courses}" 
+                     SelectedItem="{Binding SelectedCourse}" 
+                     DisplayMemberPath="Title"/>
+            
+            <Button Grid.Column="2" 
+                   Content="Create Assignment" 
+                   Command="{Binding CreateAssignmentCommand}" 
+                   CommandParameter="{Binding SelectedCourse}" 
+                   Style="{StaticResource PrimaryButton}" 
+                   Margin="10,0,0,0"/>
+        </Grid>
+        
+        <!-- Assignments List -->
+        <DataGrid Grid.Row="2" 
+                 ItemsSource="{Binding Assignments}" 
+                 AutoGenerateColumns="False" 
+                 IsReadOnly="True" 
+                 SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" 
+                                   Binding="{Binding Title}" 
+                                   Width="*"/>
+                <DataGridTextColumn Header="Due Date" 
+                                   Binding="{Binding DueDate, StringFormat=dd.MM.yyyy HH:mm}" 
+                                   Width="150"/>
+                <DataGridTextColumn Header="Max Score" 
+                                   Binding="{Binding MaxScore}" 
+                                   Width="100"/>
+                <DataGridTemplateColumn Header="Actions" 
+                                       Width="250">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Edit" 
+                                       Command="{Binding DataContext.EditAssignmentCommand, 
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                       CommandParameter="{Binding}" 
+                                       Style="{StaticResource SecondaryButton}" 
+                                       Margin="0,0,5,0"/>
+                                <Button Content="Delete" 
+                                       Command="{Binding DataContext.DeleteAssignmentCommand, 
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                       CommandParameter="{Binding}" 
+                                       Style="{StaticResource DangerButton}" 
+                                       Margin="0,0,5,0"/>
+                                <Button Content="Review" 
+                                       Command="{Binding DataContext.ReviewAssignmentCommand, 
+                                                RelativeSource={RelativeSource AncestorType=DataGrid}}" 
+                                       CommandParameter="{Binding}" 
+                                       Style="{StaticResource PrimaryButton}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,116 @@
+<Window x:Class="WpfApp1.Views.ContentEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:WpfApp1.Models"
+        Title="Edit Content"
+        Height="500" Width="700"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Title -->
+        <TextBlock Text="Edit Content" 
+                   FontSize="20" 
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,20"/>
+        
+        <!-- Content Title -->
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Title:" 
+                       Margin="0,0,0,5"/>
+            <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="0,0,0,10"/>
+        </StackPanel>
+        
+        <!-- Content Type -->
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="Content Type:" 
+                       Margin="0,0,0,5"/>
+            <ComboBox ItemsSource="{Binding ContentTypes}"
+                      SelectedItem="{Binding SelectedContentType}"
+                      Margin="0,0,0,10"/>
+        </StackPanel>
+        
+        <!-- Order Index -->
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="Order Index:" 
+                       Margin="0,0,0,5"/>
+            <TextBox Text="{Binding OrderIndex, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="0,0,0,10"/>
+        </StackPanel>
+        
+        <!-- Content Data -->
+        <Grid Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Text="Content:" 
+                       Margin="0,0,0,5"/>
+            
+            <!-- Text Content -->
+            <TextBox Grid.Row="1"
+                     Text="{Binding ContentData, UpdateSourceTrigger=PropertyChanged}" 
+                     TextWrapping="Wrap" 
+                     AcceptsReturn="True"
+                     Visibility="{Binding IsTextContent, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            
+            <!-- Video Content -->
+            <Grid Grid.Row="1" 
+                  Visibility="{Binding IsVideoContent, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Text="Video URL:" Margin="0,0,0,5"/>
+                <TextBox Grid.Row="1" 
+                         Text="{Binding ContentData, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+            
+            <!-- Quiz Content -->
+            <TextBlock Grid.Row="1" 
+                       Text="Quiz content can be edited in the Quiz Editor"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Visibility="{Binding IsQuizContent, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            
+            <Button Grid.Row="1" Content="Edit Quiz" 
+                    Command="{Binding EditQuizCommand}"
+                    Visibility="{Binding IsQuizContent, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <!-- Assignment Content -->
+            <TextBlock Grid.Row="1" 
+                       Text="Assignment content can be edited in the Assignment Editor"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Visibility="{Binding IsAssignmentContent, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </Grid>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="5" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    Margin="0,20,0,0">
+            <Button Content="Cancel" 
+                    IsCancel="True" 
+                    Style="{StaticResource SecondaryButton}" 
+                    Width="100" 
+                    Margin="0,0,10,0"/>
+            <Button Content="Save" 
+                    Command="{Binding SaveCommand}" 
+                    Style="{StaticResource PrimaryButton}" 
+                    Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>

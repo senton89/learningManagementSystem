@@ -1,0 +1,206 @@
+<Window x:Class="WpfApp1.Views.NotificationSettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:WpfApp1.ViewModels"
+        xmlns:models="clr-namespace:WpfApp1.Models"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:controls="clr-namespace:WpfApp1.Controls"
+        mc:Ignorable="d"
+        Title="Настройки уведомлений"
+        Height="600" Width="800"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource ModernWindowStyle}">
+
+    <Window.Resources>
+        <ObjectDataProvider x:Key="PriorityValues" 
+                          MethodName="GetValues" 
+                          ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:NotificationPriority"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <ObjectDataProvider x:Key="DeliveryMethodValues" 
+                          MethodName="GetValues"
+                          ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="models:NotificationDeliveryMethod"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Общие настройки -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Общие настройки" 
+                     Style="{StaticResource HeaderTextBlockStyle}"/>
+
+            <CheckBox Content="Включить уведомления" 
+                      IsChecked="{Binding NotificationsEnabled}"
+                      Margin="0,5"/>
+
+            <CheckBox Content="Включить звук" 
+                      IsChecked="{Binding SoundEnabled}"
+                      Margin="0,5"/>
+
+            <Grid Margin="0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0" 
+                         Content="Тихий режим" 
+                         IsChecked="{Binding QuietHoursEnabled}"
+                         VerticalAlignment="Center"
+                         Margin="0,0,20,0"/>
+
+                <TextBlock Grid.Column="1" 
+                         Text="с" 
+                         VerticalAlignment="Center"
+                         Margin="0,0,10,0"/>
+
+                <!-- <controls:TimePicker Grid.Column="2" -->
+                <!--           SelectedTime="{Binding QuietHoursStart}" -->
+                <!--           IsEnabled="{Binding QuietHoursEnabled}" -->
+                <!--           Width="100" -->
+                <!--           Margin="0,0,10,0"/> -->
+                
+                <TextBox Grid.Column="2"
+                         Text="{Binding QuietHoursStart, StringFormat=hh\\:mm}"
+                         IsEnabled="{Binding QuietHoursEnabled}"
+                         Width="100"
+                         Margin="0,0,10,0"/>
+
+                <TextBlock Grid.Column="3" 
+                         Text="до" 
+                         VerticalAlignment="Center"
+                         Margin="0,0,10,0"/>
+
+                <!-- <controls:TimePicker Grid.Column="4" -->
+                <!--           SelectedTime="{Binding QuietHoursEnd}" -->
+                <!--           IsEnabled="{Binding QuietHoursEnabled}" -->
+                <!--           Width="100"/> -->
+                
+                <TextBox Grid.Column="4"
+                         Text="{Binding QuietHoursEnd, StringFormat=hh\\:mm}"
+                         IsEnabled="{Binding QuietHoursEnabled}"
+                         Width="100"/>
+            </Grid>
+        </StackPanel>
+
+        <!-- Настройки типов уведомлений -->
+        <TextBlock Grid.Row="1" 
+                 Text="Настройки типов уведомлений" 
+                 Style="{StaticResource HeaderTextBlockStyle}"
+                 Margin="0,0,0,10"/>
+
+        <ScrollViewer Grid.Row="2" 
+                     VerticalScrollBarVisibility="Auto"
+                     Margin="0,0,0,20">
+            <ItemsControl ItemsSource="{Binding TypeSettings}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="{StaticResource BorderBrush}" 
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Margin="0,0,0,10"
+                                Padding="10">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Заголовок и описание -->
+                                <StackPanel Grid.Row="0" Grid.Column="0">
+                                    <TextBlock Text="{Binding DisplayName}" 
+                                             FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Description}" 
+                                             TextWrapping="Wrap"
+                                             Opacity="0.7"
+                                             Margin="0,5,0,0"/>
+                                </StackPanel>
+
+                                <!-- Включить/выключить -->
+                                <CheckBox Grid.Row="0" Grid.Column="1"
+                                         Content="Включено"
+                                         IsChecked="{Binding IsEnabled}"
+                                         Margin="10,0"/>
+
+                                <!-- Приоритет -->
+                                <ComboBox Grid.Row="0" Grid.Column="2"
+                                         ItemsSource="{Binding Source={StaticResource PriorityValues}}"
+                                         SelectedItem="{Binding Priority}"
+                                         Width="120"/>
+
+                                <!-- Способы доставки -->
+                                <StackPanel Grid.Row="2" Grid.Column="0" 
+                                          Grid.ColumnSpan="3"
+                                          Orientation="Horizontal"
+                                          Margin="0,10,0,0">
+                                    <TextBlock Text="Способы доставки:"
+                                             VerticalAlignment="Center"
+                                             Margin="0,0,10,0"/>
+                                    <ComboBox ItemsSource="{Binding Source={StaticResource DeliveryMethodValues}}"
+                                            SelectedItem="{Binding DeliveryMethod}"
+                                            Width="200"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Кнопки и статус -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Статус -->
+            <TextBlock Grid.Column="0"
+                     Text="{Binding StatusMessage}"
+                     VerticalAlignment="Center"/>
+
+            <!-- Кнопки -->
+            <Button Grid.Column="1"
+                    Content="Тестовое уведомление"
+                    Command="{Binding TestNotificationCommand}"
+                    Style="{StaticResource SecondaryButton}"
+                    Margin="0,0,10,0"/>
+
+            <Button Grid.Column="2"
+                    Content="Сбросить"
+                    Command="{Binding ResetToDefaultCommand}"
+                    Style="{StaticResource DangerButton}"
+                    Margin="0,0,10,0"/>
+
+            <Button Grid.Column="3"
+                    Content="Сохранить"
+                    Command="{Binding SaveCommand}"
+                    Style="{StaticResource PrimaryButton}"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="WpfApp1.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:WpfApp1.ViewModels">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <TextBlock Text="Dashboard" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,20"/>
+        
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- Enrolled Courses -->
+                <TextBlock Text="My Courses" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"/>
+                <ItemsControl ItemsSource="{Binding EnrolledCourses}" Margin="0,0,0,20">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Opacity="0.7" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Open" Command="{Binding DataContext.OpenCourseCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource PrimaryButton}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <!-- Teaching Courses (visible only for teachers) -->
+                <TextBlock Text="Teaching Courses" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10" 
+                           Visibility="{Binding IsTeacher, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <ItemsControl ItemsSource="{Binding TeachingCourses}" Margin="0,0,0,20"
+                              Visibility="{Binding IsTeacher, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Opacity="0.7" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Manage" Command="{Binding DataContext.OpenCourseCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource PrimaryButton}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                
+                <!-- Pending Submissions (visible only for teachers) -->
+                <TextBlock Text="Pending Reviews" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,10"
+                           Visibility="{Binding IsTeacher, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <ItemsControl ItemsSource="{Binding PendingSubmissions}" Margin="0,0,0,20"
+                              Visibility="{Binding IsTeacher, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="#DDDDDD" BorderThickness="1" CornerRadius="4" Margin="0,0,0,10" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock>
+                                            <Run Text="{Binding User.FullName}"/>
+                                            <Run Text=" - "/>
+                                            <Run Text="{Binding Assignment.Title}"/>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding SubmissionDate, StringFormat=dd.MM.yyyy HH:mm}" Opacity="0.7" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Review" Command="{Binding DataContext.ReviewSubmissionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}" CommandParameter="{Binding}" Style="{StaticResource PrimaryButton}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

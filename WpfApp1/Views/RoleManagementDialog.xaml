@@ -1,0 +1,158 @@
+<Window x:Class="WpfApp1.Views.RoleManagementDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="clr-namespace:WpfApp1.Models"
+        xmlns:viewmodels="clr-namespace:WpfApp1.ViewModels"
+        Title="Role Management" Height="600" Width="1600" WindowStartupLocation="CenterOwner">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <!-- Область пользователей -->
+        <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Панель фильтров пользователей -->
+            <GroupBox Grid.Row="0" Header="Поиск и фильтрация пользователей" Margin="10,5,10,5">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <DockPanel Margin="0,5">
+                        <Label Content="Поиск:" Width="70"/>
+                        <TextBox Text="{Binding UserSearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="0,0,5,0" MinWidth="200"/>
+                        <Button Content="Найти" Command="{Binding SearchUsersCommand}" Width="80"/>
+                    </DockPanel>
+                    
+                    <DockPanel Margin="0,5">
+                        <Label Content="Роль:" Width="70"/>
+                        <ComboBox ItemsSource="{Binding AvailableRoles}" 
+                                  SelectedItem="{Binding SelectedRoleFilter}"
+                                  
+                                  Margin="0,0,5,0" MinWidth="200">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource UserRoleConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                        <Button Content="Сбросить" Command="{Binding ResetFiltersCommand}" Width="80"/>
+                    </DockPanel>
+                    
+                    <DockPanel Margin="0,5">
+                        <Label Content="Статус:" Width="70"/>
+                        <CheckBox Content="Только активные" IsChecked="{Binding OnlyActiveUsers}" 
+                                  VerticalAlignment="Center"/>
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- Таблица пользователей -->
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Users}" AutoGenerateColumns="False" 
+                      Margin="10,5,10,10" SelectedItem="{Binding SelectedUser}"
+                      CanUserAddRows="False" CanUserDeleteRows="False" 
+                      SelectionMode="Single" SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Имя пользователя" Binding="{Binding Username}" Width="*" />
+                    <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="*" />
+                    <DataGridTemplateColumn Header="Роль" Width="*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding DataContext.AvailableRoles, 
+                                          RelativeSource={RelativeSource AncestorType=Window}}"
+                                          SelectedItem="{Binding Role, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectionChanged="RoleComboBox_SelectionChanged">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Converter={StaticResource UserRoleConverter}}" />
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridCheckBoxColumn Header="Активен" Binding="{Binding IsActive}" Width="70" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+        
+        <!-- Разделитель -->
+        <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="4" 
+                      Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch" 
+                      Background="#FFCCCCCC" />
+        
+        <!-- Область разрешений -->
+        <Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Заголовок и поиск разрешений -->
+            <GroupBox Grid.Row="0" Header="Управление разрешениями" Margin="10,5,10,5">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock x:Name="SelectedUserInfo" Margin="0,5">
+                        <Run Text="Выбранный пользователь: "/>
+                        <Run Text="{Binding SelectedUser.FullName, Mode=OneWay}" FontWeight="Bold"/>
+                        <Run Text=" ("/>
+                        <Run Text="{Binding SelectedUser.Role, Mode=OneWay}"/>
+                        <Run Text=")"/>
+                    </TextBlock>
+                    
+                    <DockPanel Margin="0,5">
+                        <Label Content="Поиск:" Width="70"/>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                 Margin="0,0,5,0" MinWidth="200"/>
+                        <Button Content="Найти" Command="{Binding SearchCommand}" Width="80"/>
+                    </DockPanel>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- Таблица разрешений -->
+            <DataGrid Grid.Row="1" ItemsSource="{Binding Permissions}" AutoGenerateColumns="False" 
+                      Margin="10,5,10,5" SelectedItem="{Binding SelectedPermission}"
+                      CanUserAddRows="False" CanUserDeleteRows="False" 
+                      SelectionMode="Single" SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Выбрано" Binding="{Binding IsSelected}" Width="70" />
+                    <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*" />
+                    <DataGridTextColumn Header="Описание" Binding="{Binding Description}" Width="2*" />
+                    <DataGridTextColumn Header="Тип" Binding="{Binding Type}" Width="*" />
+                    <DataGridTextColumn Header="Ресурс" Binding="{Binding ResourceType}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <!-- Панель кнопок -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" 
+                        Margin="10,5,10,10">
+                <Button Content="Назначить разрешение" Command="{Binding AssignPermissionCommand}" 
+                        Margin="5" Padding="5,3" />
+                <Button Content="Отозвать разрешение" Command="{Binding RevokePermissionCommand}" 
+                        Margin="5" Padding="5,3" />
+                <Button Content="Добавить разрешение" Command="{Binding AddPermissionCommand}" 
+                        Margin="5" Padding="5,3" />
+                <Button Content="Изменить разрешение" Command="{Binding EditPermissionCommand}" 
+                        Margin="5" Padding="5,3" />
+                <Button Content="Удалить разрешение" Command="{Binding DeletePermissionCommand}" 
+                        Margin="5" Padding="5,3" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

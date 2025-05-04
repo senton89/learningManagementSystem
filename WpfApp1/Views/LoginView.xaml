@@ -1,0 +1,195 @@
+<UserControl x:Class="WpfApp1.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfApp1.Views"
+             xmlns:converters="clr-namespace:WpfApp1.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+    <UserControl.Resources>
+        <!-- Можно определить локальный экземпляр конвертера, если он не находится в глобальных ресурсах -->
+        <converters:ProgressToAngleConverter x:Key="ProgressToAngleConverter"/>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Text="Learning Management System" 
+                 FontSize="24" 
+                 FontWeight="Bold" 
+                 HorizontalAlignment="Center"
+                 Margin="0,20,0,0"/>
+
+        <!-- Основное содержимое -->
+        <Grid Grid.Row="1" 
+              Width="350" 
+              VerticalAlignment="Center" 
+              Margin="20">
+            
+            <!-- Форма входа -->
+            <StackPanel x:Name="LoginForm" 
+                      Visibility="{Binding ShowPasswordResetForm, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <TextBlock Text="Вход в систему" 
+                         FontSize="20" 
+                         FontWeight="SemiBold" 
+                         Margin="0,0,0,20"/>
+
+                <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,0,10">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border x:Name="border" 
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Background="{TemplateBinding Background}"
+                                                SnapsToDevicePixels="True">
+                                            <Grid>
+                                                <TextBlock Text="Имя пользователя"
+                                                           Foreground="Gray"
+                                                           Margin="5,1"
+                                                           Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                                                            Focusable="false"
+                                                            HorizontalScrollBarVisibility="Hidden"
+                                                            VerticalScrollBarVisibility="Hidden"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <PasswordBox x:Name="PasswordBox"
+                           Margin="0,0,0,5">
+                    <PasswordBox.Style>
+                        <Style TargetType="PasswordBox" BasedOn="{StaticResource {x:Type PasswordBox}}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="PasswordBox">
+                                        <Border x:Name="border"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Background="{TemplateBinding Background}"
+                                                SnapsToDevicePixels="True">
+                                            <Grid>
+                                                <TextBlock Text="Пароль"
+                                                           Foreground="Gray"
+                                                           Margin="5,1"
+                                                           Visibility="{Binding PasswordHintVisibility}"
+                                                />
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                                                            Focusable="false"
+                                                            HorizontalScrollBarVisibility="Hidden"
+                                                            VerticalScrollBarVisibility="Hidden"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </PasswordBox.Style>
+                </PasswordBox>
+
+                <Button Content="Забыли пароль?"
+                        Command="{Binding ForgotPasswordCommand}"
+                        Style="{StaticResource LinkButton}"
+                        HorizontalAlignment="Right"
+                        Margin="0,0,0,20"/>
+
+                <Button Content="Войти"
+                        Command="{Binding LoginCommand}"
+                        Style="{StaticResource PrimaryButton}"
+                        Height="40"/>
+
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="Red"
+                           TextWrapping="Wrap"
+                           Margin="0,10,0,0"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+            </StackPanel>
+
+            <!-- Форма сброса пароля -->
+            <StackPanel x:Name="PasswordResetForm"
+                      Visibility="{Binding ShowPasswordResetForm, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="Сброс пароля"
+                         FontSize="20"
+                         FontWeight="SemiBold"
+                         Margin="0,0,0,20"/>
+
+                <TextBlock Text="Введите email, указанный при регистрации. Мы отправим вам инструкции по сбросу пароля."
+                         TextWrapping="Wrap"
+                         Margin="0,0,0,20"/>
+
+                <TextBox Text="{Binding ResetEmail, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,0,20">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border x:Name="border"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Background="{TemplateBinding Background}"
+                                                SnapsToDevicePixels="True">
+                                            <Grid>
+                                                <TextBlock Text="Email"
+                                                           Foreground="Gray"
+                                                           Margin="5,3"
+                                                           Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                                                            Focusable="false"
+                                                            HorizontalScrollBarVisibility="Hidden"
+                                                            VerticalScrollBarVisibility="Hidden"/>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <StackPanel Orientation="Horizontal"
+                          HorizontalAlignment="Right"
+                          Margin="0,0,0,10">
+                    <Button Content="Отмена"
+                            Command="{Binding CancelResetCommand}"
+                            Style="{StaticResource SecondaryButton}"
+                            Width="100"
+                            Margin="0,0,10,0"/>
+                    <Button Content="Отправить"
+                            Command="{Binding ResetPasswordCommand}"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="100"/>
+                </StackPanel>
+
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="Red"
+                           TextWrapping="Wrap"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+            </StackPanel>
+
+            <!-- Индикатор загрузки -->
+            <Grid Background="#80FFFFFF"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <!-- <ProgressBar IsIndeterminate="True" -->
+                <!--            Width="50" -->
+                <!--            Height="50" -->
+                <!--            Style="{StaticResource CircularProgressBar}"/> -->
+
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

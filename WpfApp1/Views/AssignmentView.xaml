@@ -1,0 +1,98 @@
+<UserControl x:Class="WpfApp1.Views.AssignmentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:WpfApp1.Controls"
+             xmlns:viewModels="clr-namespace:WpfApp1.ViewModels"
+             xmlns:models="clr-namespace:WpfApp1.Models"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewModels:AssignmentViewModel}">
+
+    <Border Style="{StaticResource AssignmentCard}"
+            Opacity="{Binding IsNew, Converter={StaticResource BooleanToOpacityConverter}}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Заголовок и дедлайн -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{Binding Title}"
+                         Style="{StaticResource Header2}"/>
+
+                <Border Grid.Column="1" 
+                        Style="{StaticResource DeadlineIndicator}">
+                    <TextBlock Text="{Binding TimeRemaining}"
+                             Style="{StaticResource DeadlineText}"/>
+                </Border>
+            </Grid>
+
+            <!-- Временная шкала -->
+            <controls:TimelineControl Grid.Row="1"
+                                   StartDate="{Binding StartDate}"
+                                   EndDate="{Binding DueDate}"
+                                   CurrentDate="{Binding CurrentDate}"
+                                   Milestones="{Binding Milestones}"
+                                   Height="40"
+                                   Margin="0,8"/>
+
+            <!-- Прогресс -->
+            <ProgressBar Grid.Row="2"
+                       Style="{StaticResource ProgressIndicator}"
+                       Value="{Binding ProgressValue}"/>
+
+            <!-- Описание -->
+            <TextBlock Grid.Row="3"
+                     Text="{Binding Description}"
+                     TextWrapping="Wrap"
+                     Margin="0,8"/>
+
+            <!-- Зона для файлов -->
+            <!-- <controls:FileDropZone Grid.Row="4" -->
+            <!--                      Files="{Binding Files}" -->
+            <!--                      MaxFileSize="{Binding MaxFileSize}" -->
+            <!--                      AllowedExtensions="{Binding AllowedExtensions}" -->
+            <!--                      FileAdded="OnFileAdded" -->
+            <!--                      FileRemoved="OnFileRemoved" -->
+            <!--                      Margin="0,16"/> -->
+
+            <controls:FileDropZone Grid.Row="4"
+                                   MaxFileSize="{Binding MaxFileSize}"
+                                   AllowedExtensions="{Binding AllowedExtensions}"
+                                   FileUploadStarted="OnFileAdded"
+                                   FileUploadCancelled="OnFileRemoved"
+                                   Margin="0,16"/>
+            
+            <!-- Действия -->
+            <StackPanel Grid.Row="5" 
+                      Orientation="Horizontal"
+                      HorizontalAlignment="Right"
+                      Margin="0,16,0,0">
+                <Button Content="Удалить"
+                        Command="{Binding DeleteCommand}"
+                        Style="{StaticResource DangerButton}"
+                        Margin="0,0,8,0"/>
+                
+                <Button Content="Сохранить черновик"
+                        Command="{Binding SaveDraftCommand}"
+                        Style="{StaticResource SecondaryButton}"
+                        Margin="0,0,8,0"/>
+                
+                <Button Content="Отправить"
+                        Command="{Binding SubmitCommand}"
+                        Style="{StaticResource PrimaryButton}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

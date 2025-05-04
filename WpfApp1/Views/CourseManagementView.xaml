@@ -1,0 +1,30 @@
+<Window x:Class="WpfApp1.Views.CourseManagementView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Course Management" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ToolBarTray Grid.Row="0">
+            <ToolBar>
+                <Button Content="Add Course" Command="{Binding AddCourseCommand}" />
+                <Button Content="Edit Course" Command="{Binding EditCourseCommand}" 
+                        CommandParameter="{Binding SelectedItem, ElementName=CoursesDataGrid}" />
+                <Button Content="Delete Course" Command="{Binding DeleteCourseCommand}" 
+                        CommandParameter="{Binding SelectedItem, ElementName=CoursesDataGrid}" />
+            </ToolBar>
+        </ToolBarTray>
+
+        <DataGrid x:Name="CoursesDataGrid" ItemsSource="{Binding Courses}" AutoGenerateColumns="False" Grid.Row="1" Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" />
+                <DataGridTextColumn Header="Description" Binding="{Binding Description}" />
+                <DataGridTextColumn Header="Start Date" Binding="{Binding StartDate, StringFormat=d}" />
+                <DataGridTextColumn Header="End Date" Binding="{Binding EndDate, StringFormat=d}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
